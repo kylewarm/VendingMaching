@@ -19,6 +19,11 @@ test('Should return false if change cannot be returned in case of missing coins'
     expect(getChangeCoins(178)).toBe(false);
 });
 
+test('Should return blank change if no change is needed', () => {
+    //expect(1).toBe(1);
+    expect(getChangeCoins(0)).toBe('');
+});
+
 
 test('Should get product price', () => {
     //expect(1).toBe(1);
@@ -26,7 +31,12 @@ test('Should get product price', () => {
 });
 
 
-test('Should return true to sell product', () => {
+test('Should return true to sell product without change', () => {
+    //expect(1).toBe(1);
+    expect(sellProduct("Mars", "100 50 20 20 5 2 2")).toStrictEqual({sell: true, change: ""});
+});
+
+test('Should return true to sell product and return change', () => {
     //expect(1).toBe(1);
     setMissingCoins([]);
     expect(sellProduct("Mars", "100 50 20 50 20 10")).toStrictEqual({sell: true, change: "50 1"});

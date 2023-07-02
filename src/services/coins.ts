@@ -25,18 +25,18 @@ export function getChangeCoins(change: number) {
     let changeCoins = [];
     let changeLeft = change;
 
-    for(let coin of coinTypes) {
-        let coinMaxQ = missingCoins.indexOf(coin) >= 0;
-        if (coin > changeLeft || coinMaxQ) {
+    for(let currentCoin of coinTypes) {
+        let thisCoinsIsMissing = missingCoins.indexOf(currentCoin) >= 0;
+        if (currentCoin > changeLeft || thisCoinsIsMissing) {
             continue;
         }
 
-        let coinQ = Math.floor(changeLeft / coin);
+        let quantityOfCoinsToGive = Math.floor(changeLeft / currentCoin);
 
-        for(let c = 0; c < coinQ; c++) {
-            changeCoins.push(coin);
+        for(let c = 0; c < quantityOfCoinsToGive; c++) {
+            changeCoins.push(currentCoin);
         }
-        changeLeft-= coin * coinQ;
+        changeLeft-= currentCoin * quantityOfCoinsToGive;
     }
 
     if(changeLeft > 0) {

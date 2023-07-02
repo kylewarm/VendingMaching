@@ -16,11 +16,6 @@ export function getPrice(productName: string) {
     return product?.price;
   }
 
-export function isChangeGivable(productName: string, ) {
-    const product = products.productNames.find((product) => product.name === productName);
-    return product?.price;
-}
-
 export function sellProduct(productName: string, coins: string) {
 
     if (productName === null) { // ??
