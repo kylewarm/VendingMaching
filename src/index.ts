@@ -15,8 +15,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', productsController);
 
-app.get('/price', productsController);
-
 app.post('/sell',productsSellController);
 
 app.listen(port, () => {

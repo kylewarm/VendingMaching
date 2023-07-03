@@ -12,7 +12,7 @@ export function formatAmount(amount: number): string {
 }
 export function countMoney(coins: string) {
     const coinArray = coins.split(' ').map((coin: string) => parseInt(coin));
-    const total = coinArray.reduce((a: number, b: number) => a + b, 0);
+    let total = coinArray.reduce((a: number, b: number) => a + b, 0);
     return total;
 }
 

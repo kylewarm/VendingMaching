@@ -23,17 +23,28 @@ export function sellProduct(productName: string, coins: string) {
         const data = {
             sell: false,
             change: change,
+            code: 1
         }
         return data; // ??
     }
     let productPrice = getPrice(productName);
     const moneySubmitted = countMoney(coins);
 
+    if (isNaN(moneySubmitted)) {
+        const data = {
+            sell: false,
+            change: coins,
+            code: 5
+        };
+        return data;
+    }
+
     if (!productPrice) {
         const change = sortDescending(coins);
         const data = {
             sell: false,
             change: change,
+            code: 2
         };
         return data;
     }
@@ -46,6 +57,7 @@ export function sellProduct(productName: string, coins: string) {
         const data = {
             sell: false,
             change: change,
+            code: 3
         }
         return data;
 
@@ -56,12 +68,14 @@ export function sellProduct(productName: string, coins: string) {
             const data = {
                 sell: false,
                 change: change,
+                code: 4
             }
             return data;
         } else {
             const data = {
                 sell: true,
                 change: change,
+                code: 0
             }
             return data;
         }
