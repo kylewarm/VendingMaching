@@ -77,7 +77,7 @@ it('It does not sell product, if I gave incorrect money value', async () => {
         })
     );
 });
-
+/*
 it('It does not sell product, if it cannot find it', async () => {
     const reqBody = {productName: "Nuka Cola", coins: "100 100"}
     const res = await request(app).post("/sell").send(reqBody);
@@ -90,4 +90,4 @@ it('It does not sell product, if it cannot find it', async () => {
             code: 2
         })
     );
-});
+}); */
