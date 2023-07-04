@@ -1,5 +1,12 @@
 // @ts-ignore
 
+enum ErrorCode {
+    Up = 1,
+    Down,
+    Left,
+    NoCoinsToGiveChange = 4,
+  }
+
 import {countMoney, formatAmount, getChangeCoins, sortDescending} from "./coins";
 
 export const products = {
@@ -16,37 +23,34 @@ export function getPrice(productName: string) {
     return product?.price;
   }
 
-export function sellProduct(productName: string, coins: string) {
+export function sellProduct(productName: string, coins: string, missingCoins: number[] = []) {
 
-    if (productName === null) { // ??
-        const change = sortDescending(coins);
-        const data = {
+    if (!productName) {
+        return {
             sell: false,
-            change: change,
+            change: sortDescending(coins),
             code: 1
-        }
-        return data; // ??
+        };
     }
     let productPrice = getPrice(productName);
     const moneySubmitted = countMoney(coins);
 
-    if (isNaN(moneySubmitted)) {
-        const data = {
+    if (!moneySubmitted) {
+        return  {
             sell: false,
             change: coins,
             code: 5
-        };
-        return data;
+        };;
     }
 
     if (!productPrice) {
         const change = sortDescending(coins);
-        const data = {
+
+        return {
             sell: false,
             change: change,
             code: 2
         };
-        return data;
     }
 
     productPrice *= 100;
@@ -62,13 +66,13 @@ export function sellProduct(productName: string, coins: string) {
         return data;
 
     } else {
-        const change = getChangeCoins(moneySubmitted - productPrice);
+        const change = getChangeCoins(moneySubmitted - productPrice, missingCoins);
         if(change === false) {
             const change = sortDescending(coins);
             const data = {
                 sell: false,
                 change: change,
-                code: 4
+                code: ErrorCode.NoCoinsToGiveChange
             }
             return data;
         } else {

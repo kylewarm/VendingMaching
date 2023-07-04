@@ -1,11 +1,5 @@
 
 export const coinTypes = [100, 50, 20, 10, 5, 2, 1];
- let missingCoins = [100, 50, 1];
-
-
-export function setMissingCoins(coins: number[]): void {
-    missingCoins = coins;
-}
 
 export function formatAmount(amount: number): string {
     return (amount / 100).toFixed(2);
@@ -21,7 +15,7 @@ export function sortDescending(coins: string): string {
     coinArray.sort((a, b) => b - a);
     return coinArray.join(' ');
 }
-export function getChangeCoins(change: number) {
+export function getChangeCoins(change: number, missingCoins: number[]=[]) {
     let changeCoins = [];
     let changeLeft = change;
 

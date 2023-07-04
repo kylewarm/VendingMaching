@@ -24,7 +24,7 @@ it('It sell product if I have enough money', async () => {
     const res = await request(app).post("/sell").send(reqBody);
     expect(res.statusCode).toBe(201);
     expect(res.text).toContain(JSON.stringify(
-        {sell: true, change: "", message: "Here is your product Mars Money submitted is 1.99, code: 0"})
+        {sell: true, change: "", message: "Here is your product Mars Money submitted is 1.99,", code: 0})
     );
 });
 
@@ -33,7 +33,7 @@ it('It sell product and gives change if I prodvide more money than needed', asyn
     const res = await request(app).post("/sell").send(reqBody);
     expect(res.statusCode).toBe(201);
     expect(res.text).toContain(JSON.stringify(
-        {sell: true, change: "20 20 20 20 20 10 5", message: "Here is your product Snickers Money submitted is 3.00, code: 0"})
+        {sell: true, change: "20 20 20 20 20 10 5", message: "Here is your product Snickers Money submitted is 3.00,", code: 0})
     );
 });
 
