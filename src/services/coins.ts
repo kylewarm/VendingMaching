@@ -1,15 +1,19 @@
-
 export const coinTypes = [100, 50, 20, 10, 5, 2, 1];
- let missingCoins = [100, 50, 1];
 
+let missingCoins: number[] = [100, 50, 1];
 
-export function setMissingCoins(coins: number[]): void {
-    missingCoins = coins;
+export function setMissingCoins(coins: string) {
+    missingCoins = coins.split(' ').map((coin: string) => parseInt(coin));
+}
+
+export function getMissingCoins(): number[] {
+    return missingCoins;
 }
 
 export function formatAmount(amount: number): string {
     return (amount / 100).toFixed(2);
 }
+
 export function countMoney(coins: string) {
     const coinArray = coins.split(' ').map((coin: string) => parseInt(coin));
     let total = coinArray.reduce((a: number, b: number) => a + b, 0);
@@ -21,25 +25,26 @@ export function sortDescending(coins: string): string {
     coinArray.sort((a, b) => b - a);
     return coinArray.join(' ');
 }
-export function getChangeCoins(change: number) {
+
+export function getChangeCoins(change: number, missingCoins: number[] = []) {
     let changeCoins = [];
     let changeLeft = change;
 
-    for(let currentCoin of coinTypes) {
+    for (let currentCoin of coinTypes) {
         let thisCoinsIsMissing = missingCoins.indexOf(currentCoin) >= 0;
-        if (currentCoin > changeLeft || thisCoinsIsMissing) {
-            continue;
-        }
+        if (currentCoin <= changeLeft && !thisCoinsIsMissing) {
 
-        let quantityOfCoinsToGive = Math.floor(changeLeft / currentCoin);
 
-        for(let c = 0; c < quantityOfCoinsToGive; c++) {
-            changeCoins.push(currentCoin);
+            let quantityOfCoinsToGive = Math.floor(changeLeft / currentCoin);
+
+            for (let c = 0; c < quantityOfCoinsToGive; c++) {
+                changeCoins.push(currentCoin);
+            }
+            changeLeft -= currentCoin * quantityOfCoinsToGive;
         }
-        changeLeft-= currentCoin * quantityOfCoinsToGive;
     }
 
-    if(changeLeft > 0) {
+    if (changeLeft > 0) {
         return false;
     } else {
         return changeCoins.join(' ');

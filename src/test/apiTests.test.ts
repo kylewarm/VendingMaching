@@ -19,12 +19,22 @@ it('It should return product list', async () => {
     );
 });
 
+it('It sets and returns missing coins', async () => {
+    const reqBody = {coins: "100 50 2"}
+    const res = await request(app).post("/missingCoins").send(reqBody).expect(201);
+    //expect(res.statusCode).toBe(201);
+    const res2 = await request(app).get("/missingCoins");
+    expect(res2.text).toContain(JSON.stringify(
+        {coins: "100 50 2"})
+    );
+});
+
 it('It sell product if I have enough money', async () => {
     const reqBody = {productName: "Mars", coins: "100 50 20 20 5 2 2"}
     const res = await request(app).post("/sell").send(reqBody);
     expect(res.statusCode).toBe(201);
     expect(res.text).toContain(JSON.stringify(
-        {sell: true, change: "", message: "Here is your product Mars Money submitted is 1.99,"})
+        {sell: true, change: "", message: "Here is your product Mars Money submitted is 1.99,", code: 0})
     );
 });
 
@@ -33,7 +43,7 @@ it('It sell product and gives change if I prodvide more money than needed', asyn
     const res = await request(app).post("/sell").send(reqBody);
     expect(res.statusCode).toBe(201);
     expect(res.text).toContain(JSON.stringify(
-        {sell: true, change: "20 20 20 20 20 10 5", message: "Here is your product Snickers Money submitted is 3.00,"})
+        {sell: true, change: "20 20 20 20 20 10 5", message: "Here is your product Snickers Money submitted is 3.00,", code: 0})
     );
 });
 
@@ -52,6 +62,8 @@ it('It does not sell product, if I provided too little money', async () => {
 });
 
 it('It does not sell product, if it cannot give the change', async () => {
+    const coinsBody = {coins: "100 50 1"}
+    await request(app).post("/missingCoins").send(coinsBody).expect(201);
     const reqBody = {productName: "Mars", coins: "100 100"}
     const res = await request(app).post("/sell").send(reqBody);
     expect(res.statusCode).toBe(400);
@@ -88,6 +100,20 @@ it('It does not sell product, if it cannot find it', async () => {
             change: "100 100",
             message: "Product name Nuka Cola does not exist. Here is your money: 2.00,",
             code: 2
+        })
+    );
+});
+
+it('It does not sell product, if no product provided', async () => {
+    const reqBody = {productName: "", coins: "100 100"}
+    const res = await request(app).post("/sell").send(reqBody);
+    expect(res.statusCode).toBe(400);
+    expect(res.text).toContain(JSON.stringify(
+        {
+            sell: false,
+            change: "100 100",
+            message: "You haven't provided product name. Here is your money: 2.00,",
+            code: 1
         })
     );
 });

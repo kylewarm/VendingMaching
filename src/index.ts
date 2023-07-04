@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
 import {productsController, productsSellController} from "./controllers/products";
+import {coinsGetMissingController, coinsSetMissingController } from './controllers/coins';
 dotenv.config();
 
 const app: Express = express();
@@ -17,8 +18,17 @@ app.get('/', productsController);
 
 app.post('/sell',productsSellController);
 
-app.listen(port, () => {
+app.post('/missingCoins',coinsSetMissingController);
+
+app.get('/missingCoins',coinsGetMissingController);
+
+
+let appServer = app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
+
+afterAll(() => {
+    appServer.close()
+})
 
 module.exports = app;

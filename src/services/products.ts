@@ -2,6 +2,16 @@
 
 import {countMoney, formatAmount, getChangeCoins, sortDescending} from "./coins";
 
+enum ErrorCode {
+    AllGood = 0,
+    NotDefinedProduct = 1,
+    ProductIsMissing = 2,
+    NotEnoughMoney = 3,
+    NoCoinsToGiveChange = 4,
+    CannotParseCoins = 5,
+
+}
+
 export const products = {
     productNames: [
       { name: 'Mars', price: 1.99 },
@@ -16,37 +26,33 @@ export function getPrice(productName: string) {
     return product?.price;
   }
 
-export function sellProduct(productName: string, coins: string) {
+export function sellProduct(productName: string, coins: string, missingCoins: number[] = []) {
 
-    if (productName === null) { // ??
-        const change = sortDescending(coins);
-        const data = {
+    if (!productName) {
+        return {
             sell: false,
-            change: change,
-            code: 1
-        }
-        return data; // ??
+            change: sortDescending(coins),
+            code: ErrorCode.NotDefinedProduct
+        };
     }
     let productPrice = getPrice(productName);
     const moneySubmitted = countMoney(coins);
 
-    if (isNaN(moneySubmitted)) {
-        const data = {
+    if (!(moneySubmitted)) {
+        return  {
             sell: false,
             change: coins,
-            code: 5
+            code: ErrorCode.CannotParseCoins
         };
-        return data;
     }
 
     if (!productPrice) {
         const change = sortDescending(coins);
-        const data = {
+        return {
             sell: false,
             change: change,
-            code: 2
+            code: ErrorCode.ProductIsMissing
         };
-        return data;
     }
 
     productPrice *= 100;
@@ -54,28 +60,27 @@ export function sellProduct(productName: string, coins: string) {
     if (moneySubmitted < productPrice) {
         // const change = ranged(req.body.coins);
         const change = sortDescending(coins);
-        const data = {
+        return {
             sell: false,
             change: change,
-            code: 3
-        }
-        return data;
+            code: ErrorCode.NotEnoughMoney
+        };
 
     } else {
-        const change = getChangeCoins(moneySubmitted - productPrice);
+        const change = getChangeCoins(moneySubmitted - productPrice, missingCoins);
         if(change === false) {
             const change = sortDescending(coins);
             const data = {
                 sell: false,
                 change: change,
-                code: 4
+                code: ErrorCode.NoCoinsToGiveChange
             }
             return data;
         } else {
             const data = {
                 sell: true,
                 change: change,
-                code: 0
+                code: ErrorCode.AllGood
             }
             return data;
         }
