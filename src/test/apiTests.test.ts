@@ -117,3 +117,5 @@ it('It does not sell product, if no product provided', async () => {
         })
     );
 });
+
+export {}
